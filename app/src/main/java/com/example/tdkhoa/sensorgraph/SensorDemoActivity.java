@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
-
 import com.example.tdkhoa.sensorgraph.graph.GraphRenderer;
 import com.example.tdkhoa.sensorgraph.graph.SensorGraph;
 import com.example.tdkhoa.sensorgraph.model.GraphInfo;
@@ -33,6 +32,7 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
     private SensorGraph xSensorGraph;
     private SensorGraph ySensorGraph;
     private SensorGraph zSensorGraph;
+    private SensorGraph heartBeatGraph;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,7 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
             graphRenderer = new GraphRenderer(this);
             glSurfaceView.setRenderer(graphRenderer);
             rendererSet = true;
+            graphRenderer.addView(heartBeatGraph);
             graphRenderer.addView(xSensorGraph);
             graphRenderer.addView(ySensorGraph);
             graphRenderer.addView(zSensorGraph);
@@ -71,6 +72,13 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
     }
 
     private void initSensorGraph(){
+        heartBeatGraph = new SensorGraph(this, new GraphInfo.Builder()
+                .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
+                .xStartPosition(-1)
+                .xEndPosition(1)
+                .yPositionToDraw(0.5f)
+                .color(Color.WHITE)
+                .build());
         xSensorGraph = new SensorGraph(this, new GraphInfo.Builder().maxData(10)
                 .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
                 .xStartPosition(-1)
@@ -131,6 +139,11 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
         xSensorGraph.addSensorData(x);
         ySensorGraph.addSensorData(y);
         zSensorGraph.addSensorData(z);
+
+        Random rand = new Random();
+        int randomNumber = rand.nextInt(50);
+        heartBeatGraph.drawHeartBeat(randomNumber < 2);
+
     }
 
 

@@ -49,15 +49,36 @@ public class SensorGraph extends BaseGraph {
         }
         position = (data / graphInfo.getMaxData()) * heightRatio;
         Log.d(TAG, "addSensorData: data = " + position);
-        sensorData[sensorDataIndex] = position;
-        sensorData[SENSOR_HISTORY_LENGTH + sensorDataIndex] = position;
-        sensorDataIndex = (sensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
-
+        createLine(position);
         vertexSensor = allocateBuffer(sensorData);
         vertexSensor.put(sensorData);
         vertexSensor.position(sensorDataIndex);
         vertexData.position(0);
     }
+
+
+    public void drawHeartBeat(boolean isBeat) {
+        if(isBeat) {
+            createLine(heightRatio * -1/5);
+            createLine(heightRatio * 1);
+            createLine(heightRatio * -1);
+            createLine(heightRatio * 1/5);
+        } else{
+            createLine(0);
+        }
+        vertexSensor = allocateBuffer(sensorData);
+        vertexSensor.put(sensorData);
+        vertexSensor.position(sensorDataIndex);
+        vertexData.position(0);
+    }
+
+    private void createLine(float position){
+        Log.d(TAG, "drawHeartBeat: data = " + position);
+        sensorData[sensorDataIndex] = position;
+        sensorData[SENSOR_HISTORY_LENGTH + sensorDataIndex] = position;
+        sensorDataIndex = (sensorDataIndex + 1) % SENSOR_HISTORY_LENGTH;
+    }
+
 
     @Override public void draw(ShaderProgram shaderProgram) {
         GraphShaderProgram graphShaderProgram = (GraphShaderProgram) shaderProgram;
