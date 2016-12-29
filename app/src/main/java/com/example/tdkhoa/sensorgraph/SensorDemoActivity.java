@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,6 +16,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 
+import com.example.tdkhoa.sensorgraph.graph.GraphRenderer;
+import com.example.tdkhoa.sensorgraph.graph.SensorGraph;
+import com.example.tdkhoa.sensorgraph.model.GraphInfo;
+
 import java.util.Random;
 
 public class SensorDemoActivity extends Activity implements SensorEventListener {
@@ -24,10 +29,10 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
     private GLSurfaceView glSurfaceView;
     private boolean rendererSet = false;
     private SensorManager sensorManager;
-    private long lastUpdate;
     private GraphRenderer graphRenderer;
-    private SpeedGraph speedGraph;
-    private SpeedGraph speedGraph1;
+    private SensorGraph xSensorGraph;
+    private SensorGraph ySensorGraph;
+    private SensorGraph zSensorGraph;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,31 +54,43 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
                         || Build.MODEL.contains("Android SDK built for x86")));
 
         if (supportsEs2) {
+            initSensorGraph();
             glSurfaceView.setEGLContextClientVersion(2);
             graphRenderer = new GraphRenderer(this);
             glSurfaceView.setRenderer(graphRenderer);
             rendererSet = true;
-            speedGraph = new SpeedGraph(this, new GraphInfo.Builder().maxData(100)
-                    .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
-                    .xStartPosition(-0.5f)
-                    .xEndPosition(0.5f).yPositionToDraw(-0.5f)
-                    .build());
-            speedGraph1 = new SpeedGraph(this, new GraphInfo.Builder()
-                    .maxData(100)
-                    .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
-                    .xStartPosition(-0.5f)
-                    .xEndPosition(0.5f)
-                    .yPositionToDraw(-0.7f)
-                    .build());
-            graphRenderer.addView(speedGraph);
-            graphRenderer.addView(speedGraph1);
+            graphRenderer.addView(xSensorGraph);
+            graphRenderer.addView(ySensorGraph);
+            graphRenderer.addView(zSensorGraph);
         } else {
             Toast.makeText(this, "This device does not support OpenGL ES 2.0.",
                     Toast.LENGTH_LONG).show();
             return;
         }
-
         setContentView(glSurfaceView);
+    }
+
+    private void initSensorGraph(){
+        xSensorGraph = new SensorGraph(this, new GraphInfo.Builder().maxData(10)
+                .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
+                .xStartPosition(-1)
+                .xEndPosition(1)
+                .yPositionToDraw(0)
+                .color(Color.WHITE)
+                .build());
+        ySensorGraph = new SensorGraph(this, new GraphInfo.Builder().maxData(10)
+                .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
+                .xStartPosition(-1)
+                .xEndPosition(1).yPositionToDraw(-0.4f)
+                .build());
+        zSensorGraph = new SensorGraph(this, new GraphInfo.Builder()
+                .maxData(10)
+                .maxHeight(this.getResources().getDimensionPixelOffset(R.dimen.max_height))
+                .xStartPosition(-1)
+                .xEndPosition(1)
+                .yPositionToDraw(-0.7f)
+                .color(Color.BLUE)
+                .build());
     }
 
     @Override
@@ -111,26 +128,9 @@ public class SensorDemoActivity extends Activity implements SensorEventListener 
         float g = (float) Math.sqrt(x * x + y * y + z * z);
         float accelationSquareRoot = (x * x + y * y + z * z)
                 / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-
-
-        Random rand = new Random();
-        int randomNum = 0 + rand.nextInt((200 - 0) + 1);
-
-        if (speedGraph != null) {
-            speedGraph.addSensorData(randomNum);
-            randomNum = 0 + rand.nextInt((200 - 0) + 1);
-            speedGraph1.addSensorData(randomNum);
-        }
-
-
-        long actualTime = event.timestamp;
-        if (accelationSquareRoot >= 2) //
-        {
-            if (actualTime - lastUpdate < 200) {
-                return;
-            }
-            lastUpdate = actualTime;
-        }
+        xSensorGraph.addSensorData(x);
+        ySensorGraph.addSensorData(y);
+        zSensorGraph.addSensorData(z);
     }
 
 
