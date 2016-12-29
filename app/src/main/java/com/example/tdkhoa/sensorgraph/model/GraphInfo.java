@@ -11,6 +11,7 @@ public class GraphInfo {
     private float xStartPosition;
     private float xEndPosition;
     private float yPositionToDraw;
+    private float lineWidth;
 
     //color - default is yellow
     private float red = 1;
@@ -25,11 +26,16 @@ public class GraphInfo {
         xStartPosition = builder.xStartPosition;
         xEndPosition = builder.xEndPosition;
         yPositionToDraw = builder.yPositionToDraw;
+        lineWidth = builder.lineWidth;
         if (builder.color != 0) {
             red = Color.red(builder.color) / 255f;
             green = Color.green(builder.color) / 255f;
             blue = Color.blue(builder.color) / 255f;
         }
+    }
+
+    public float getLineWidth() {
+        return lineWidth;
     }
 
     public void setMaxData(float maxData) {
@@ -85,6 +91,7 @@ public class GraphInfo {
         private float xEndPosition = 1;
         private float yPositionToDraw = -0.5f;
         private int color;
+        private float lineWidth = 5;
 
         public Builder maxWidth(int val) {
             maxWidth = val;
@@ -123,6 +130,11 @@ public class GraphInfo {
 
         public Builder color(int color) {
             this.color = color;
+            return this;
+        }
+
+        public Builder lineWidth(float width) {
+            this.lineWidth = width;
             return this;
         }
 

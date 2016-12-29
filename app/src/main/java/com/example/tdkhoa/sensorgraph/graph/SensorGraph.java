@@ -61,7 +61,7 @@ public class SensorGraph extends BaseGraph {
 
     @Override public void draw(ShaderProgram shaderProgram) {
         GraphShaderProgram graphShaderProgram = (GraphShaderProgram) shaderProgram;
-        GLES20.glLineWidth(5f);
+        GLES20.glLineWidth(graphInfo.getLineWidth());
         GLES20.glUniform4f(graphShaderProgram.getColorLocation(), graphInfo.getRed(), graphInfo.getGreen(), graphInfo.getBlue(), 1.0f);
         GLES20.glDrawArrays(GLES20.GL_LINE_STRIP, 0, SENSOR_HISTORY_LENGTH);
     }
