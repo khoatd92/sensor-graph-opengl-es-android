@@ -19,7 +19,7 @@ Getting Started
 
 Screenshots
 -----------
-![screenshot](screenshot.png)
+![screenshot](screenshot.png) ![screenshot](screenshot1.png)
 
 Support
 -------
