@@ -91,7 +91,7 @@ public class GraphInfo {
         private float xEndPosition = 1;
         private float yPositionToDraw = -0.5f;
         private int color;
-        private float lineWidth = 5;
+        private float lineWidth = 20;
 
         public Builder maxWidth(int val) {
             maxWidth = val;
